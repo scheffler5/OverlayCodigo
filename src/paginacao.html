@@ -35,22 +35,7 @@
         </div>
     </div>
 
-    <script>
-        function iniciar() {
-            const painel = document.getElementById('painelMemoria');
-            painel.innerHTML = "";
 
-            for (let i = 0; i < 20; i++) {
-                const bloco = document.createElement("div");
-                bloco.classList.add("bloco-pagina");
-                painel.appendChild(bloco);
-            }
-        }
-
-        function parar() {
-            document.getElementById("painelMemoria").innerHTML = "";
-        }
-    </script>
     <script>
         document.querySelector('.btn.iniciar').addEventListener('click', () => {
             const blocos = document.querySelectorAll('.bloco-pagina');
@@ -88,49 +73,62 @@
                 "P10": "#C8E6C9"
             };
 
-            let memoria = Array(20).fill(null);
-            let quadroAtual = 0;
-
+            memoria = Array(20).fill(null); // Se for global
             const totalBlocos = 20;
-            const blocosOcupados = Math.floor(Math.random() * (totalBlocos + 1)); // de 0 a 20
+            const blocosOcupados = Math.floor(Math.random() * (totalBlocos + 1));
 
-            // Criar blocos ocupados primeiro
             for (let i = 0; i < blocosOcupados; i++) {
+                const processo = processos[Math.floor(Math.random() * processos.length)];
+                const pagina = Math.floor(Math.random() * 6);
+                const cor = cores[processo];
+
+                const bloco = criarBlocoMemoria(i, processo, pagina, cor);
+                painel.appendChild(bloco);
+
+                memoria[i] = {
+                    processo,
+                    pagina,
+                    cor,
+                    ocupado: true
+                };
+            }
+
+            for (let i = blocosOcupados; i < totalBlocos; i++) {
                 const bloco = document.createElement('div');
                 bloco.classList.add('bloco-pagina', 'bloco-animado');
                 bloco.style.animationDelay = `${i * 0.05}s`;
-
-                const processo = processos[Math.floor(Math.random() * processos.length)];
-                bloco.style.backgroundColor = cores[processo];
+                bloco.style.backgroundColor = '#eeeeee';
 
                 const texto = document.createElement('div');
-                texto.textContent = `${processo} - Pag ${Math.floor(Math.random() * 6)}`;
-                texto.style.color = 'black';
+                texto.textContent = 'Livre';
+                texto.style.color = 'gray';
                 texto.style.fontWeight = 'bold';
                 texto.style.textAlign = 'center';
                 texto.style.fontSize = '14px';
 
                 bloco.appendChild(texto);
                 painel.appendChild(bloco);
+
+                memoria[i] = null;
             }
 
-            // Criar blocos livres no restante
-            for (let i = blocosOcupados; i < totalBlocos; i++) {
-                const bloco = document.createElement('div');
-                bloco.classList.add('bloco-pagina', 'bloco-animado');
-                bloco.style.animationDelay = `${i * 0.05}s`;
+        }
 
-                const livre = document.createElement('div');
-                livre.textContent = "Livre";
-                livre.style.color = "#7B7D7D";
-                livre.style.textAlign = "center";
-                livre.style.fontSize = "14px";
+        function criarBlocoMemoria(id, processo, pagina, cor) {
+            const bloco = document.createElement('div');
+            bloco.classList.add('bloco-pagina', 'bloco-animado');
+            bloco.style.animationDelay = `${id * 0.05}s`;
+            bloco.style.backgroundColor = cor;
 
-                bloco.appendChild(livre);
-                painel.appendChild(bloco);
-            }
+            const texto = document.createElement('div');
+            texto.textContent = `${processo} - Pag ${pagina}`;
+            texto.style.color = 'black';
+            texto.style.fontWeight = 'bold';
+            texto.style.textAlign = 'center';
+            texto.style.fontSize = '14px';
 
-
+            bloco.appendChild(texto);
+            return bloco;
         }
     </script>
     <script>
@@ -149,19 +147,6 @@
         };
         let memoria = Array(20).fill(null);
         let quadroAtual = 0;
-
-        function criarBlocoMemoria(id, ocupado, processo, pagina) {
-            const bloco = document.createElement("div");
-            bloco.classList.add("bloco-pagina");
-            bloco.id = "bloco-" + id;
-
-            // Define cor baseado no estado
-            bloco.style.backgroundColor = ocupado ? "#23ACA0" : "#D9D9D9"; // Verde ou cinza
-
-            document.getElementById("painelMemoria").appendChild(bloco);
-
-            atualizarTabela(id, ocupado, processo, pagina);
-        }
 
         function atualizarTabela() {
             const corpo = document.getElementById("corpoTabela");
