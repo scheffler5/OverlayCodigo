@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="backgrounds">
+        <div class="bg-layer bg-a"></div>
+        <div class="bg-layer bg-b"></div>
+    </div>
+    <div class="container">
+        <aside class="sidebar fade-in">
+            <h2 class="menu-title">Qual Você Deseja Simular?</h2>
+            <div class="menu-buttons">
+                <button id="btn-overlay" class="menu-btn">Overlay</button>
+                <button id="btn-paginacao" class="menu-btn">paginacao</button>
+                <button class="menu-btn">Segmentação</button>
+                <button class="menu-btn">Fragmentação</button>
+            </div>
+            <button class="doc-btn">Documentação</button>
+        </aside>
+
+        <main class="content fade-in">
+            <div class="welcome-box">
+                <h1 class="welcome-text">Seja Bem-Vindo à <span>Experiência</span></h1>
+            </div>
+            <button class="start-btn">Iniciar</button>
+        </main>
+    </div>
+    <script>
+        const layers = [
+            document.querySelector('.bg-a'),
+            document.querySelector('.bg-b')
+        ];
+
+        const backgrounds = [
+            `linear-gradient(0deg, rgba(0, 0, 0, 0.39), rgba(0, 0, 0, 0.39)), 
+           linear-gradient(180deg, #A7A1FF 0%, #7479D8 8.67%, #3F3ABA 22%, #2824B4 36.21%, #4C2391 47.02%, #831243 59.85%, #670A0A 74.69%, #510909 84.12%, #450B0B 92.29%, #160000 100%)`,
+
+            `linear-gradient(0deg, rgba(0, 0, 0, 0.39), rgba(0, 0, 0, 0.39)), 
+           linear-gradient(180deg, #E4A1FF 0%, #D674D8 8.67%, #BA3A9A 22%, #B42462 36.21%, #91233F 47.02%, #83122A 59.85%, #670A13 74.69%, #51090A 84.12%, #450B0B 92.29%, #160000 100%)`,
+
+            `linear-gradient(0deg, rgba(0, 0, 0, 0.39), rgba(0, 0, 0, 0.39)), 
+           linear-gradient(180deg, #FFDCBD 0%, #FFC251 8.67%, #D8A95D 22%, #CABA3E 36.21%, #B5C34E 47.02%, #688D13 59.85%, #535C0F 74.69%, #0E580B 84.12%, #225510 92.29%, #081603 100%)`,
+
+            `linear-gradient(0deg, rgba(0, 0, 0, 0.39), rgba(0, 0, 0, 0.39)), 
+           linear-gradient(180deg, #A1FFE1 0%, #66D4D4 8.67%, #3AB6BA 22%, #24AFB4 36.21%, #238091 47.02%, #0F3E6B 59.85%, #0A1D67 74.69%, #091551 84.12%, #0B0C45 92.29%, #000006 100%)`
+        ];
+
+        let index = 0;
+        let visible = 0;
+
+        function switchBackground() {
+            const current = layers[visible];
+            const next = layers[1 - visible];
+
+            next.style.background = backgrounds[index];
+            next.style.opacity = 1;
+            current.style.opacity = 0;
+
+            visible = 1 - visible;
+            index = (index + 1) % backgrounds.length;
+        }
+
+        // Inicialização
+        layers[0].style.background = backgrounds[0];
+        layers[0].style.opacity = 1;
+
+        setInterval(switchBackground, 5000);
+    </script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.fade-in').forEach((el, i) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, i * 200);
+            });
+        });
+    </script>
+    <script>
+        document.getElementById("btn-overlay").addEventListener("click", function() {
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = "overlay.html";
+            }, 600);
+        });
+    </script>
+    <script>
+        document.getElementById("btn-paginacao").addEventListener("click", function() {
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = "paginacao.html";
+            }, 600);
+        });
+    </script>
+
+
+
+</body>
+
+</html>

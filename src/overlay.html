@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador</title>
+    <link rel="stylesheet" href="Styles2.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="tela">
+        <div></div>
+        <div class="top-group animated delay-1">
+            <div class="top-box destaque">Rotina Principal</div>
+            <div class="top-box"></div>
+            <div class="top-box"></div>
+            <div class="top-box"></div>
+            <div class="top-box"></div>
+        </div>
+
+        <!-- Blocos centrais -->
+        <div class="linha-meio animated delay-1">
+            <div class="bloco-centro"></div>
+            <div class="bloco-centro"></div>
+            <div class="bloco-centro"></div>
+        </div>
+
+        <!-- Botões -->
+        <div class="botoes animated delay-5">
+            <button class="botao iniciar">Iniciar</button>
+            <button class="botao parar">Parar</button>
+        </div>
+
+    </div>
+    <script>
+        let filaSubrotinas = [];
+        let subrotinasAtivas = {};
+        let subrotinasConcluidas = [];
+        let temposExecucao = {};
+        let intervalos = {};
+
+        function escolherCorAleatoria() {
+            const cores = ["#FFADAD", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#9BF6FF"];
+            return cores[Math.floor(Math.random() * cores.length)];
+        }
+
+        function configurarSubrotinas() {
+            filaSubrotinas = [];
+            subrotinasConcluidas = [];
+            subrotinasAtivas = {};
+            temposExecucao = {};
+
+            for (let i = 1; i <= 15; i++) {
+                const sub = `Subrotina ${i}`;
+                filaSubrotinas.push(sub);
+                temposExecucao[sub] = Math.floor(Math.random() * 10000) + 5000;
+            }
+        }
+
+        function iniciarSimulacao() {
+            pararSimulacao();
+            configurarSubrotinas();
+
+            // Desativar botão "Iniciar" e mostrar carregando
+            const botaoIniciar = document.querySelector(".botao.iniciar");
+            botaoIniciar.disabled = true;
+            botaoIniciar.textContent = "Iniciando...";
+
+            // Delay de 2 segundos antes de iniciar
+            setTimeout(() => {
+                const topBoxes = document.querySelectorAll(".top-box");
+                topBoxes.forEach((box, i) => {
+                    if (i === 0) {
+                        box.textContent = "Rotina Principal";
+                        box.style.backgroundColor = "#A8DADC";
+                    } else {
+                        box.innerHTML = "";
+                        box.style.backgroundColor = "";
+                    }
+                });
+
+                for (let i = 1; i <= 4; i++) {
+                    if (filaSubrotinas.length > 0) {
+                        const sub = filaSubrotinas.shift();
+                        const box = document.querySelectorAll(".top-box")[i];
+                        iniciarSubrotina(sub, i, box);
+                    }
+                }
+
+                atualizarBlocosCentrais();
+
+                botaoIniciar.disabled = false;
+                botaoIniciar.textContent = "Iniciar";
+            }, 750);
+        }
+
+
+        function pararSimulacao() {
+            Object.values(intervalos).forEach(clearInterval);
+            intervalos = {};
+            filaSubrotinas = [];
+            subrotinasAtivas = {};
+            subrotinasConcluidas = [];
+
+            document.querySelectorAll(".top-box").forEach(box => {
+                box.innerHTML = "";
+                box.style.backgroundColor = "";
+            });
+
+            atualizarBlocosCentrais();
+        }
+
+        function iniciarSubrotina(subrotina, index, box) {
+            const cor = escolherCorAleatoria();
+            let tempoRestante = temposExecucao[subrotina] / 1000;
+
+            box.innerHTML = `<strong>${subrotina}</strong><div class="tempo">${tempoRestante.toFixed(1)}s</div>`;
+            box.style.backgroundColor = cor;
+            subrotinasAtivas[index] = {
+                nome: subrotina,
+                cor: cor
+            };
+
+            intervalos[subrotina] = setInterval(() => {
+                tempoRestante -= 0.1;
+                const tempoDiv = box.querySelector(".tempo");
+                if (tempoDiv) tempoDiv.textContent = `${tempoRestante.toFixed(1)}s`;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(intervalos[subrotina]);
+                    delete intervalos[subrotina];
+                    delete subrotinasAtivas[index];
+                    subrotinasConcluidas.push(subrotina);
+                    box.innerHTML = "";
+                    box.style.backgroundColor = "";
+
+                    if (filaSubrotinas.length > 0) {
+                        const nova = filaSubrotinas.shift();
+                        iniciarSubrotina(nova, index, box);
+                    }
+
+                    atualizarBlocosCentrais();
+                }
+            }, 100);
+
+            atualizarBlocosCentrais();
+        }
+
+        function atualizarBlocosCentrais() {
+            const blocos = document.querySelectorAll(".linha-meio .bloco-centro");
+
+            // Ativas
+            blocos[1].innerHTML = Object.values(subrotinasAtivas)
+                .map(obj => `<div class="mini-bloco ativo" style="background-color:${obj.cor}">${obj.nome}</div>`).join("");
+
+            // Em espera
+            blocos[0].innerHTML = filaSubrotinas
+                .map(nome => `<div class="mini-bloco espera">${nome}</div>`).join("");
+
+            // Concluídas
+            blocos[2].innerHTML = subrotinasConcluidas
+                .map(nome => `<div class="mini-bloco concluida">${nome}</div>`).join("");
+        }
+
+        document.querySelector(".botao.iniciar").addEventListener("click", iniciarSimulacao);
+        document.querySelector(".botao.parar").addEventListener("click", pararSimulacao);
+    </script>
+
+</body>
+
+</html>

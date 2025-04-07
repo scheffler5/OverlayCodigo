@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Aldrich', sans-serif;
+    background: linear-gradient(to bottom right, #3a3a8a, #000040);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.tela {
+    width: 90%;
+    max-width: 1000px;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* LINHA SUPERIOR */
+
+.linha-superior {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.bloco-topo {
+    width: 130px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.vermelho {
+    background-color: #a00000;
+}
+
+.cinza {
+    background-color: #ddd;
+    color: black;
+}
+
+
+/* LINHA MEIO */
+
+.linha-meio {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.bloco-centro {
+    width: 250px;
+    height: 350px;
+    border-radius: 30px;
+    background-color: #080014;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.botoes {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 30px;
+}
+
+.botao {
+    padding: 20px 60px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.iniciar {
+    background-color: blue;
+    color: white;
+}
+
+.parar {
+    background-color: #a00000;
+    color: white;
+}
+
+.iniciar:hover {
+    background: #0000aa;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #0000ff66;
+}
+
+.parar:hover {
+    background: #aa0000;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ff000066;
+}
+
+.top-group {
+    display: flex;
+    gap: 20px;
+    padding: 30px 30px;
+    background: #140c52;
+    border-radius: 30px;
+    margin: 35 auto 40px auto;
+    width: fit-content;
+    box-shadow: 0 0 10px #00000055;
+}
+
+.top-box {
+    width: 200px;
+    height: 150px;
+    background: #d9d9d9;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Aldrich', sans-serif;
+    font-size: 16px;
+    color: #000;
+}
+
+.top-box.destaque {
+    width: 400px;
+    height: 150px;
+    background: #8c0000;
+    color: white;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        scale: 0.95;
+    }
+    100% {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+.animated {
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.delay-1 {
+    animation: fadeInUp 0.8s ease-out 0.2s forwards;
+}
+
+.delay-2 {
+    animation: fadeInUp 0.8s ease-out 0.4s forwards;
+}
+
+.delay-3 {
+    animation: fadeInUp 0.8s ease-out 0.6s forwards;
+}
+
+.delay-4 {
+    animation: fadeInUp 0.8s ease-out 0.8s forwards;
+}
+
+.delay-5 {
+    animation: fadeIn 1s ease-out 1s forwards;
+}
+
+.mini-bloco {
+    padding: 6px 10px;
+    margin: 4px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.ativo {
+    background-color: #A0C4FF;
+}
+
+.espera {
+    background-color: #FFD6A5;
+}
+
+.concluida {
+    background-color: #BDB2FF;
+}
+
+.top-box .tempo {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: black;
+}

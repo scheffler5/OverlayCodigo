@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    font-family: 'Orbitron', sans-serif;
+    color: white;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #0e0b0b;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu-title {
+    font-size: 1rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.menu-btn {
+    background: linear-gradient(to bottom, #610000, #8f0000);
+    border: 1px solid #ffffff22;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.menu-btn:hover {
+    background: #aa0000;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ff000066;
+}
+
+.doc-btn {
+    background: linear-gradient(to bottom, #320000, #610000);
+    color: white;
+    padding: 30px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    margin-top: auto;
+}
+
+.doc-btn:hover {
+    background: #8f0000;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ff000066;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcome-box {
+    background-color: #00044d;
+    padding: 40px 80px;
+    border-radius: 80px;
+    margin-bottom: 40px;
+    border: 0.5px solid #ff0404;
+}
+
+.welcome-text {
+    font-size: 1.8rem;
+    color: white;
+    text-align: center;
+}
+
+.welcome-text span {
+    color: #ff0411;
+}
+
+.start-btn {
+    padding: 20px 60px;
+    border-radius: 12px;
+    background: #1c0000;
+    color: white;
+    border: none;
+    box-shadow: 2px 4px 10px #00000050;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.start-btn:hover {
+    background: #450000;
+}
+
+.backgrounds {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.bg-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 2s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+}
+
+.bg-a {
+    z-index: -1;
+}
+
+.bg-b {
+    z-index: -2;
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+body.fade-out {
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}

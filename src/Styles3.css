@@ -1,0 +1,154 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Aldrich', sans-serif;
+    background: linear-gradient(to bottom, #b0c4de, #d9d9d9);
+    background-attachment: fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.pagina {
+    background: linear-gradient(180deg, #79FFE0 0%, #27D095 18.27%, #23ACA0 35.58%, #0A6E9F 53.37%, #072673 69.71%, #08034A 84.86%, #01000A 100%);
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-in-out;
+    padding-bottom: 370px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    width: 700px;
+    height: 600px;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+    animation: fadeSlide 1s ease forwards;
+    animation-delay: 0.3s;
+}
+
+.memoria {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 30px;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.bloco-pagina {
+    width: 120%;
+    height: 90px;
+    aspect-ratio: 1 / 1;
+    background-color: #D9D9D9;
+    border-radius: 15px;
+    animation: fadeUp 0.6s ease-out forwards;
+}
+
+.bloco-animado {
+    animation: pulse 0.6s ease-in-out;
+}
+
+
+/* Efeito de "pulsar" */
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.botoes {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    animation: fadeSlide 1s ease forwards;
+    animation-delay: 1s;
+}
+
+.btn {
+    width: 150px;
+    height: 60px;
+    border: 1px solid #000000;
+    border-radius: 12px;
+    font-size: 28px;
+    font-family: 'Aldrich';
+    cursor: pointer;
+}
+
+.btn.iniciar {
+    background-color: #00FF09;
+    color: black;
+}
+
+.btn.parar {
+    background-color: #A60202;
+    color: black;
+}
+
+.tabela-paginas {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 20px;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 800px;
+    color: white;
+    font-family: 'Aldrich';
+    text-align: center;
+    margin-top: 10px;
+}
+
+.tabela-paginas table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-paginas th,
+.tabela-paginas td {
+    border: 1px solid #fff;
+    padding: 8px;
+    font-size: 16px;
+    justify-content: center;
+    gap: 15px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

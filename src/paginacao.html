@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulação de Paginação</title>
+    <link rel="stylesheet" href="Styles3.css" />
+</head>
+
+<body>
+    <div class="pagina">
+        <div class="container">
+            <div class="memoria" id="painelMemoria"></div>
+        </div>
+        <div class="tabela-paginas" id="tabelaPaginas">
+            <h2>Tabela de Páginas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Processo</th>
+                        <th>Nº Página</th>
+                        <th>Quadro Físico</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela"></tbody>
+            </table>
+        </div>
+
+        <div class="botoes">
+            <button class="btn iniciar" onclick="iniciar()">Iniciar</button>
+            <button class="btn executar" onclick="executarInstrucao()">Executar Instrução</button>
+            <button class="btn parar" onclick="parar()">Parar</button>
+        </div>
+    </div>
+
+    <script>
+        function iniciar() {
+            const painel = document.getElementById('painelMemoria');
+            painel.innerHTML = "";
+
+            for (let i = 0; i < 20; i++) {
+                const bloco = document.createElement("div");
+                bloco.classList.add("bloco-pagina");
+                painel.appendChild(bloco);
+            }
+        }
+
+        function parar() {
+            document.getElementById("painelMemoria").innerHTML = "";
+        }
+    </script>
+    <script>
+        document.querySelector('.btn.iniciar').addEventListener('click', () => {
+            const blocos = document.querySelectorAll('.bloco-pagina');
+            blocos.forEach(bloco => {
+                bloco.classList.remove('bloco-animado'); // Reset se já tiver animado
+                void bloco.offsetWidth; // Força reflow para reiniciar animação
+                bloco.classList.add('bloco-animado');
+            });
+        });
+    </script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const blocos = document.querySelectorAll('.bloco-pagina');
+            blocos.forEach((bloco, index) => {
+                bloco.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+    <script>
+        function iniciar() {
+            const painel = document.getElementById('painelMemoria');
+            painel.innerHTML = '';
+
+            const processos = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"];
+            const cores = {
+                "P1": "#FFADAD",
+                "P2": "#FFD6A5",
+                "P3": "#FDFFB6",
+                "P4": "#CAFFBF",
+                "P5": "#9BF6FF",
+                "P6": "#A0C4FF",
+                "P7": "#BDB2FF",
+                "P8": "#FFC6FF",
+                "P9": "#FFFFFC",
+                "P10": "#C8E6C9"
+            };
+
+            let memoria = Array(20).fill(null);
+            let quadroAtual = 0;
+
+            const totalBlocos = 20;
+            const blocosOcupados = Math.floor(Math.random() * (totalBlocos + 1)); // de 0 a 20
+
+            // Criar blocos ocupados primeiro
+            for (let i = 0; i < blocosOcupados; i++) {
+                const bloco = document.createElement('div');
+                bloco.classList.add('bloco-pagina', 'bloco-animado');
+                bloco.style.animationDelay = `${i * 0.05}s`;
+
+                const processo = processos[Math.floor(Math.random() * processos.length)];
+                bloco.style.backgroundColor = cores[processo];
+
+                const texto = document.createElement('div');
+                texto.textContent = `${processo} - Pag ${Math.floor(Math.random() * 6)}`;
+                texto.style.color = 'black';
+                texto.style.fontWeight = 'bold';
+                texto.style.textAlign = 'center';
+                texto.style.fontSize = '14px';
+
+                bloco.appendChild(texto);
+                painel.appendChild(bloco);
+            }
+
+            // Criar blocos livres no restante
+            for (let i = blocosOcupados; i < totalBlocos; i++) {
+                const bloco = document.createElement('div');
+                bloco.classList.add('bloco-pagina', 'bloco-animado');
+                bloco.style.animationDelay = `${i * 0.05}s`;
+
+                const livre = document.createElement('div');
+                livre.textContent = "Livre";
+                livre.style.color = "#7B7D7D";
+                livre.style.textAlign = "center";
+                livre.style.fontSize = "14px";
+
+                bloco.appendChild(livre);
+                painel.appendChild(bloco);
+            }
+
+
+        }
+    </script>
+    <script>
+        const processos = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"];
+        const cores = {
+            "P1": "#FFADAD",
+            "P2": "#FFD6A5",
+            "P3": "#FDFFB6",
+            "P4": "#CAFFBF",
+            "P5": "#9BF6FF",
+            "P6": "#A0C4FF",
+            "P7": "#BDB2FF",
+            "P8": "#FFC6FF",
+            "P9": "#FFFFFC",
+            "P10": "#C8E6C9"
+        };
+        let memoria = Array(20).fill(null);
+        let quadroAtual = 0;
+
+        function criarBlocoMemoria(id, ocupado, processo, pagina) {
+            const bloco = document.createElement("div");
+            bloco.classList.add("bloco-pagina");
+            bloco.id = "bloco-" + id;
+
+            // Define cor baseado no estado
+            bloco.style.backgroundColor = ocupado ? "#23ACA0" : "#D9D9D9"; // Verde ou cinza
+
+            document.getElementById("painelMemoria").appendChild(bloco);
+
+            atualizarTabela(id, ocupado, processo, pagina);
+        }
+
+        function atualizarTabela() {
+            const corpo = document.getElementById("corpoTabela");
+            corpo.innerHTML = "";
+
+            memoria.forEach((bloco, idx) => {
+                const linha = document.createElement("tr");
+
+                if (bloco) {
+                    linha.innerHTML = `
+                <td>${bloco.processo}</td>
+                <td>${bloco.pagina}</td>
+                <td>${idx}</td>
+                <td style="color: #00FF00;">✔</td>
+            `;
+                } else {
+                    linha.innerHTML = `
+                <td>-</td>
+                <td>-</td>
+                <td>${idx}</td>
+                <td style="color: #FF0000;">Livre</td>
+            `;
+                }
+
+                corpo.appendChild(linha);
+            });
+        }
+
+        function executarInstrucao() {
+            const processo = processos[Math.floor(Math.random() * processos.length)];
+            const pagina = Math.floor(Math.random() * 6);
+            const index = memoria.findIndex(p => p && p.processo === processo && p.pagina === pagina);
+            document.getElementById("tabelaPaginas").style.display = "block";
+            if (index !== -1) {
+                destacarBloco(index, '#00FF00');
+                console.log("✅ Page Hit");
+            } else {
+                const novoBloco = {
+                    processo,
+                    pagina,
+                    cor: cores[processo],
+                    ocupado: true
+                };
+
+                memoria[quadroAtual] = novoBloco;
+                destacarBloco(quadroAtual, '#FF0000');
+                quadroAtual = (quadroAtual + 1) % memoria.length;
+                console.log("❌ Page Fault");
+                atualizarTabela();
+
+            }
+        }
+
+        function destacarBloco(index, cor) {
+            const blocos = document.querySelectorAll('.bloco-pagina');
+            if (blocos[index]) {
+                blocos[index].style.transition = '0.3s';
+                blocos[index].style.backgroundColor = cor;
+
+                setTimeout(() => {
+                    blocos[index].style.backgroundColor = "#D9D9D9";
+                }, 600);
+            }
+        }
+    </script>
+
+
+
+</body>
+
+</html>
