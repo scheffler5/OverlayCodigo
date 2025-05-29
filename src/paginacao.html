@@ -1,220 +1,606 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simulação de Paginação</title>
-    <link rel="stylesheet" href="Styles3.css" />
+    <title>Simulador de Paginação de Memória</title>
+    <link rel="stylesheet" href="Styles2.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&display=swap" rel="stylesheet">
+    <style>
+        /* Adaptações e Estilos Adicionais para Paginação */
+        
+        body {
+            font-family: 'Aldrich', sans-serif;
+            background-color: #1e1e2f;
+            /* Um fundo escuro como no exemplo de overlay */
+            color: #e0e0e0;
+        }
+        
+        .tela {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #2a2a3a;
+            /* Cor de fundo para a área principal */
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .top-group {
+            display: flex;
+            justify-content: space-around;
+            /* Distribui os quadros de memória */
+            margin-bottom: 30px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .top-box {
+            /* Representa um Quadro de Memória Física */
+            width: 18%;
+            /* Para 5 caixas */
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            background-color: #3a3a4a;
+            /* Cor de quadro livre */
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .top-box.ocupado {
+            /* A cor será definida pelo processo */
+        }
+        
+        .top-box .frame-id {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        
+        .top-box .page-info {
+            font-weight: bold;
+        }
+        
+        .top-box .process-id {
+            font-size: 0.85em;
+        }
+        
+        .linha-meio {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            /* Espaço entre as colunas centrais */
+            margin-bottom: 30px;
+        }
+        
+        .coluna-centro {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            flex: 1;
+            /* Faz com que as colunas ocupem espaço igual */
+            min-height: 250px;
+            /* Altura mínima para as colunas */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .titulo-centro {
+            font-size: 1.3em;
+            /* Fonte maior para os títulos das colunas */
+            color: #A8DADC;
+            /* Cor de destaque para títulos */
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+        
+        .bloco-centro {
+            /* Área de conteúdo das colunas centrais */
+            flex-grow: 1;
+            /* Para preencher o espaço vertical */
+            overflow-y: auto;
+            /* Scroll se o conteúdo for grande */
+            padding: 5px;
+        }
+        
+        .bloco-centro .item-pagina,
+        .bloco-centro .item-tabela,
+        .bloco-centro .stat-item {
+            background-color: #333;
+            color: #ddd;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            border-left: 5px solid #555;
+            /* Destaque lateral */
+        }
+        
+        .bloco-centro .item-tabela span {
+            margin-right: 8px;
+            display: inline-block;
+            min-width: 20px;
+        }
+        
+        .bloco-centro .stat-item strong {
+            color: #A8DADC;
+        }
+        /* Estilos para os botões como no exemplo de overlay */
+        
+        .botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .botao {
+            padding: 12px 25px;
+            font-family: 'Aldrich', sans-serif;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            color: white;
+            min-width: 150px;
+            /* Largura mínima para botões */
+        }
+        
+        .botao.iniciar {
+            background-color: #4CAF50;
+            /* Verde */
+        }
+        
+        .botao.iniciar:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        
+        .botao.executar {
+            /* Novo botão */
+            background-color: #2196F3;
+            /* Azul */
+        }
+        
+        .botao.executar:hover {
+            background-color: #1976D2;
+            transform: scale(1.05);
+        }
+        
+        .botao.parar {
+            background-color: #f44336;
+            /* Vermelho */
+        }
+        
+        .botao.parar:hover {
+            background-color: #d32f2f;
+            transform: scale(1.05);
+        }
+        
+        .botao:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+        /* Animação de destaque para quadros de memória */
+        
+        .highlight-fault {
+            animation: faultPulse 0.7s ease-out;
+        }
+        
+        .highlight-hit {
+            animation: hitPulse 0.7s ease-out;
+        }
+        
+        @keyframes faultPulse {
+            0% {
+                background-color: #ff4d4d;
+                transform: scale(1.05);
+            }
+            /* Vermelho para fault */
+            100% {
+                /* Retorna à cor original via JS */
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes hitPulse {
+            0% {
+                background-color: #4dff4d;
+                transform: scale(1.05);
+            }
+            /* Verde para hit */
+            100% {
+                /* Retorna à cor original via JS */
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="pagina">
-        <div class="container">
-            <div class="memoria" id="painelMemoria"></div>
+    <div class="tela">
+        <div class="top-group" id="painelMemoriaFisica">
         </div>
-        <div class="tabela-paginas" id="tabelaPaginas">
-            <h2>Tabela de Páginas</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Processo</th>
-                        <th>Nº Página</th>
-                        <th>Quadro Físico</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTabela"></tbody>
-            </table>
+
+        <div class="linha-meio">
+            <div class="coluna-centro">
+                <div class="titulo-centro">Páginas em Disco</div>
+                <div class="bloco-centro" id="paginasEmDisco">
+                </div>
+            </div>
+            <div class="coluna-centro">
+                <div class="titulo-centro">Tabela de Páginas (em Memória)</div>
+                <div class="bloco-centro" id="tabelaPaginasMemoria">
+                </div>
+            </div>
+            <div class="coluna-centro">
+                <div class="titulo-centro">Estatísticas</div>
+                <div class="bloco-centro" id="estatisticasAcesso">
+                </div>
+            </div>
         </div>
 
         <div class="botoes">
-            <button class="btn iniciar" onclick="iniciar()">Iniciar</button>
-            <button class="btn executar" onclick="executarInstrucao()">Executar Instrução</button>
-            <button class="btn parar" onclick="parar()">Parar</button>
+            <button class="botao iniciar" id="btnIniciar">Iniciar Simulação</button>
+            <button class="botao executar" id="btnExecutarInstrucao" disabled>Executar Instrução</button>
+            <button class="botao parar" id="btnParar" disabled>Parar Simulação</button>
         </div>
     </div>
 
-
     <script>
-        document.querySelector('.btn.iniciar').addEventListener('click', () => {
-            const blocos = document.querySelectorAll('.bloco-pagina');
-            blocos.forEach(bloco => {
-                bloco.classList.remove('bloco-animado'); // Reset se já tiver animado
-                void bloco.offsetWidth; // Força reflow para reiniciar animação
-                bloco.classList.add('bloco-animado');
-            });
-        });
-    </script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const blocos = document.querySelectorAll('.bloco-pagina');
-            blocos.forEach((bloco, index) => {
-                bloco.style.animationDelay = `${index * 0.1}s`;
-            });
-        });
-    </script>
-    <script>
-        function iniciar() {
-            const painel = document.getElementById('painelMemoria');
-            painel.innerHTML = '';
+        const NUM_FRAMES = 5;
+        const NUM_PROCESSOS = 4;
+        const PAGINAS_POR_PROCESSO = 4;
+        const AUTO_EXEC_INTERVAL_MS = 1500; // Intervalo para execução automática (1.5 segundos)
 
-            const processos = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"];
-            const cores = {
-                "P1": "#FFADAD",
-                "P2": "#FFD6A5",
-                "P3": "#FDFFB6",
-                "P4": "#CAFFBF",
-                "P5": "#9BF6FF",
-                "P6": "#A0C4FF",
-                "P7": "#BDB2FF",
-                "P8": "#FFC6FF",
-                "P9": "#FFFFFC",
-                "P10": "#C8E6C9"
-            };
+        let memoriaFisica = [];
+        let tabelaPaginasGlobal = {};
 
-            memoria = Array(20).fill(null); // Se for global
-            const totalBlocos = 20;
-            const blocosOcupados = Math.floor(Math.random() * (totalBlocos + 1));
+        let pageFaults = 0;
+        let pageHits = 0;
+        let clockPointer = 0;
+        let simulationRunning = false;
+        let accessCounter = 0;
+        let autoExecIntervalId = null; // ID para o setInterval
 
-            for (let i = 0; i < blocosOcupados; i++) {
-                const processo = processos[Math.floor(Math.random() * processos.length)];
-                const pagina = Math.floor(Math.random() * 6);
-                const cor = cores[processo];
-
-                const bloco = criarBlocoMemoria(i, processo, pagina, cor);
-                painel.appendChild(bloco);
-
-                memoria[i] = {
-                    processo,
-                    pagina,
-                    cor,
-                    ocupado: true
-                };
-            }
-
-            for (let i = blocosOcupados; i < totalBlocos; i++) {
-                const bloco = document.createElement('div');
-                bloco.classList.add('bloco-pagina', 'bloco-animado');
-                bloco.style.animationDelay = `${i * 0.05}s`;
-                bloco.style.backgroundColor = '#eeeeee';
-
-                const texto = document.createElement('div');
-                texto.textContent = 'Livre';
-                texto.style.color = 'gray';
-                texto.style.fontWeight = 'bold';
-                texto.style.textAlign = 'center';
-                texto.style.fontSize = '14px';
-
-                bloco.appendChild(texto);
-                painel.appendChild(bloco);
-
-                memoria[i] = null;
-            }
-
-        }
-
-        function criarBlocoMemoria(id, processo, pagina, cor) {
-            const bloco = document.createElement('div');
-            bloco.classList.add('bloco-pagina', 'bloco-animado');
-            bloco.style.animationDelay = `${id * 0.05}s`;
-            bloco.style.backgroundColor = cor;
-
-            const texto = document.createElement('div');
-            texto.textContent = `${processo} - Pag ${pagina}`;
-            texto.style.color = 'black';
-            texto.style.fontWeight = 'bold';
-            texto.style.textAlign = 'center';
-            texto.style.fontSize = '14px';
-
-            bloco.appendChild(texto);
-            return bloco;
-        }
-    </script>
-    <script>
-        const processos = ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"];
-        const cores = {
-            "P1": "#FFADAD",
-            "P2": "#FFD6A5",
-            "P3": "#FDFFB6",
-            "P4": "#CAFFBF",
-            "P5": "#9BF6FF",
-            "P6": "#A0C4FF",
-            "P7": "#BDB2FF",
-            "P8": "#FFC6FF",
-            "P9": "#FFFFFC",
-            "P10": "#C8E6C9"
+        const processosCores = {
+            "P0": "#FFADAD",
+            "P1": "#FFD6A5",
+            "P2": "#FDFFB6",
+            "P3": "#CAFFBF",
         };
-        let memoria = Array(20).fill(null);
-        let quadroAtual = 0;
 
-        function atualizarTabela() {
-            const corpo = document.getElementById("corpoTabela");
-            corpo.innerHTML = "";
+        const painelMemoriaEl = document.getElementById('painelMemoriaFisica');
+        const paginasEmDiscoEl = document.getElementById('paginasEmDisco');
+        const tabelaPaginasMemoriaEl = document.getElementById('tabelaPaginasMemoria');
+        const estatisticasAcessoEl = document.getElementById('estatisticasAcesso');
 
-            memoria.forEach((bloco, idx) => {
-                const linha = document.createElement("tr");
+        const btnIniciar = document.getElementById('btnIniciar');
+        const btnExecutar = document.getElementById('btnExecutarInstrucao');
+        const btnParar = document.getElementById('btnParar');
 
-                if (bloco) {
-                    linha.innerHTML = `
-                <td>${bloco.processo}</td>
-                <td>${bloco.pagina}</td>
-                <td>${idx}</td>
-                <td style="color: #00FF00;">✔</td>
+        // Renomeada para clareza
+        function configurarNovaSimulacao() {
+            pararExecucaoAutomatica(); // Garante que qualquer execução anterior pare
+
+            memoriaFisica = new Array(NUM_FRAMES).fill(null);
+            tabelaPaginasGlobal = {};
+            pageFaults = 0;
+            pageHits = 0;
+            clockPointer = 0;
+            accessCounter = 0;
+
+            for (let i = 0; i < NUM_PROCESSOS; i++) {
+                const processoId = `P${i}`;
+                for (let j = 0; j < PAGINAS_POR_PROCESSO; j++) {
+                    const paginaVirtualId = `${processoId}_${j}`;
+                    tabelaPaginasGlobal[paginaVirtualId] = {
+                        processoId: processoId,
+                        paginaId: j,
+                        frame: null,
+                        R: 0,
+                        M: 0,
+                        onDisk: true,
+                        lastAccess: 0,
+                        cor: processosCores[processoId]
+                    };
+                }
+            }
+
+            criarVisualizacaoMemoriaFisica();
+            atualizarTodasVisualizacoes();
+            simulationRunning = true; // A lógica está pronta, mas a auto-execução ainda não começou
+
+            // Estados dos botões são definidos por quem chama esta função
+        }
+
+        // Renomeada para clareza
+        function resetarSimulacaoCompleta() {
+            pararExecucaoAutomatica();
+            simulationRunning = false;
+
+            // Limpar estruturas de dados (opcional, pois configurarNovaSimulacao fará isso)
+            // memoriaFisica = new Array(NUM_FRAMES).fill(null);
+            // tabelaPaginasGlobal = {};
+            // pageFaults = 0; pageHits = 0; clockPointer = 0; accessCounter = 0;
+
+            criarVisualizacaoMemoriaFisica(); // Limpa os quadros visuais
+            atualizarTodasVisualizacoes(); // Limpa as listas e estatísticas
+
+            btnIniciar.textContent = "Iniciar Simulação";
+            btnExecutar.disabled = true;
+            btnParar.disabled = true;
+            console.log("Simulação resetada.");
+        }
+
+        function iniciarExecucaoAutomatica() {
+            if (!simulationRunning) return; // Não iniciar se a simulação não estiver configurada
+            pararExecucaoAutomatica(); // Limpa qualquer intervalo anterior
+
+            autoExecIntervalId = setInterval(executarInstrucaoAleatoria, AUTO_EXEC_INTERVAL_MS);
+
+            btnIniciar.textContent = "Reiniciar Simulação"; // Agora funciona como reiniciar
+            btnExecutar.disabled = true; // Desabilitado durante auto-execução
+            btnParar.disabled = false;
+        }
+
+        function pararExecucaoAutomatica() {
+            if (autoExecIntervalId) {
+                clearInterval(autoExecIntervalId);
+                autoExecIntervalId = null;
+            }
+            // Não reabilita btnExecutar aqui, pois Parar agora é um reset completo
+            // Se fosse um "Pause", reabilitaria.
+        }
+
+        function criarVisualizacaoMemoriaFisica() {
+            painelMemoriaEl.innerHTML = '';
+            for (let i = 0; i < NUM_FRAMES; i++) {
+                const frameEl = document.createElement('div');
+                frameEl.classList.add('top-box');
+                frameEl.dataset.frameIndex = i;
+
+                const frameIdEl = document.createElement('div');
+                frameIdEl.classList.add('frame-id');
+                frameIdEl.textContent = `Quadro ${i}`;
+
+                const pageInfoEl = document.createElement('div');
+                pageInfoEl.classList.add('page-info');
+                pageInfoEl.textContent = 'Livre';
+
+                const processIdEl = document.createElement('div');
+                processIdEl.classList.add('process-id');
+
+                frameEl.appendChild(frameIdEl);
+                frameEl.appendChild(pageInfoEl);
+                frameEl.appendChild(processIdEl);
+                painelMemoriaEl.appendChild(frameEl);
+            }
+        }
+
+        function atualizarVisualizacaoQuadro(frameIndex, paginaInfo) {
+            const frameEl = painelMemoriaEl.children[frameIndex];
+            if (!frameEl) return; // Segurança
+            const pageInfoEl = frameEl.querySelector('.page-info');
+            const processIdEl = frameEl.querySelector('.process-id');
+
+            if (paginaInfo) {
+                frameEl.style.backgroundColor = paginaInfo.cor;
+                pageInfoEl.textContent = `Página ${paginaInfo.paginaId}`;
+                processIdEl.textContent = `Processo ${paginaInfo.processoId}`;
+                frameEl.classList.add('ocupado');
+            } else {
+                frameEl.style.backgroundColor = '#3a3a4a';
+                pageInfoEl.textContent = 'Livre';
+                processIdEl.textContent = '';
+                frameEl.classList.remove('ocupado');
+            }
+        }
+
+        function atualizarVisualizacaoPaginasEmDisco() {
+            paginasEmDiscoEl.innerHTML = '';
+            Object.values(tabelaPaginasGlobal).forEach(pagina => {
+                if (pagina.onDisk && pagina.frame === null) {
+                    const item = document.createElement('div');
+                    item.classList.add('item-pagina');
+                    item.textContent = `Proc ${pagina.processoId} - Pág ${pagina.paginaId}`;
+                    item.style.borderLeftColor = pagina.cor;
+                    paginasEmDiscoEl.appendChild(item);
+                }
+            });
+        }
+
+        function atualizarVisualizacaoTabelaPaginasMemoria() {
+            tabelaPaginasMemoriaEl.innerHTML = '';
+            Object.values(tabelaPaginasGlobal).forEach(pagina => {
+                if (pagina.frame !== null) {
+                    const item = document.createElement('div');
+                    item.classList.add('item-tabela');
+                    item.style.borderLeftColor = pagina.cor;
+                    item.innerHTML = `<span>${pagina.processoId}_${pagina.paginaId}</span> -> Q: <strong>${pagina.frame}</strong> R:${pagina.R} M:${pagina.M}`;
+                    tabelaPaginasMemoriaEl.appendChild(item);
+                }
+            });
+        }
+
+        function atualizarVisualizacaoEstatisticas() {
+            const totalAcessos = pageHits + pageFaults;
+            const hitRate = totalAcessos > 0 ? ((pageHits / totalAcessos) * 100).toFixed(1) : 0;
+            estatisticasAcessoEl.innerHTML = `
+                <div class="stat-item">Page Hits: <strong>${pageHits}</strong></div>
+                <div class="stat-item">Page Faults: <strong>${pageFaults}</strong></div>
+                <div class="stat-item">Taxa de Acerto: <strong>${hitRate}%</strong></div>
             `;
+        }
+
+        function atualizarTodasVisualizacoes() {
+            for (let i = 0; i < NUM_FRAMES; i++) {
+                atualizarVisualizacaoQuadro(i, memoriaFisica[i]);
+            }
+            atualizarVisualizacaoPaginasEmDisco();
+            atualizarVisualizacaoTabelaPaginasMemoria();
+            atualizarVisualizacaoEstatisticas();
+        }
+
+        function executarInstrucaoAleatoria() {
+            if (!simulationRunning) {
+                pararExecucaoAutomatica(); // Segurança: se algo desabilitou a simulação
+                return;
+            }
+            accessCounter++;
+
+            const processoIdx = Math.floor(Math.random() * NUM_PROCESSOS);
+            const paginaIdx = Math.floor(Math.random() * PAGINAS_POR_PROCESSO);
+            const processoId = `P${processoIdx}`;
+            const paginaVirtualId = `${processoId}_${paginaIdx}`;
+
+            console.log(`Acessando: ${paginaVirtualId} (Acesso #${accessCounter})`);
+            const paginaInfo = tabelaPaginasGlobal[paginaVirtualId];
+
+            if (paginaInfo.frame !== null) {
+                pageHits++;
+                paginaInfo.R = 1;
+                paginaInfo.lastAccess = accessCounter;
+                if (Math.random() < 0.3) {
+                    paginaInfo.M = 1;
+                }
+                console.log(`Page Hit em ${paginaVirtualId} no Quadro ${paginaInfo.frame}`);
+                destacarQuadro(paginaInfo.frame, 'hit');
+            } else {
+                pageFaults++;
+                console.log(`Page Fault para ${paginaVirtualId}`);
+                let quadroAlvo = -1;
+
+                quadroAlvo = memoriaFisica.findIndex(q => q === null);
+
+                if (quadroAlvo !== -1) {
+                    console.log(`Alocando ${paginaVirtualId} no Quadro livre ${quadroAlvo}`);
                 } else {
-                    linha.innerHTML = `
-                <td>-</td>
-                <td>-</td>
-                <td>${idx}</td>
-                <td style="color: #FF0000;">Livre</td>
-            `;
+                    console.log("Memória cheia. Aplicando Clock Algorithm.");
+                    let encontradoParaSubstituir = false;
+                    let tentativasClock = 0; // Para evitar loop infinito em casos extremos
+                    while (!encontradoParaSubstituir && tentativasClock < NUM_FRAMES * 2) { // Limite de tentativas
+                        const paginaNoQuadroClock = memoriaFisica[clockPointer];
+                        // É crucial que paginaNoQuadroClock não seja null aqui, o que não deveria acontecer se não há quadros livres.
+                        if (!paginaNoQuadroClock) { // Salvaguarda
+                            console.error(`Erro: Quadro ${clockPointer} está null inesperadamente durante o Clock.`);
+                            clockPointer = (clockPointer + 1) % NUM_FRAMES;
+                            tentativasClock++;
+                            continue;
+                        }
+                        const paginaGlobalNoQuadroClock = tabelaPaginasGlobal[`${paginaNoQuadroClock.processoId}_${paginaNoQuadroClock.paginaId}`];
+
+                        if (paginaGlobalNoQuadroClock.R === 0) {
+                            quadroAlvo = clockPointer;
+                            console.log(`Substituindo página ${paginaGlobalNoQuadroClock.processoId}_${paginaGlobalNoQuadroClock.paginaId} (R=${paginaGlobalNoQuadroClock.R}, M=${paginaGlobalNoQuadroClock.M}) no Quadro ${quadroAlvo}`);
+
+                            if (paginaGlobalNoQuadroClock.M === 1) {
+                                console.log(`Página ${paginaGlobalNoQuadroClock.processoId}_${paginaGlobalNoQuadroClock.paginaId} foi modificada. (Simulando escrita em disco)`);
+                            }
+                            paginaGlobalNoQuadroClock.frame = null;
+                            paginaGlobalNoQuadroClock.onDisk = true;
+                            paginaGlobalNoQuadroClock.R = 0;
+                            // M bit idealmente é resetado pelo SO após escrita em disco. Aqui, vamos mantê-lo para info.
+                            // paginaGlobalNoQuadroClock.M = 0; 
+
+                            encontradoParaSubstituir = true;
+                        } else {
+                            paginaGlobalNoQuadroClock.R = 0;
+                        }
+                        clockPointer = (clockPointer + 1) % NUM_FRAMES;
+                        tentativasClock++;
+                    }
+                    if (!encontradoParaSubstituir) {
+                        console.warn("Clock não encontrou página para substituir após várias tentativas. Forçando substituição no ponteiro atual.");
+                        quadroAlvo = clockPointer; // Fallback: substitui onde o ponteiro parou
+                        const paginaNoQuadroClock = memoriaFisica[quadroAlvo];
+                        if (paginaNoQuadroClock) {
+                            const paginaGlobalNoQuadroClock = tabelaPaginasGlobal[`${paginaNoQuadroClock.processoId}_${paginaNoQuadroClock.paginaId}`];
+                            paginaGlobalNoQuadroClock.frame = null;
+                            paginaGlobalNoQuadroClock.onDisk = true;
+                            paginaGlobalNoQuadroClock.R = 0;
+                        }
+                        clockPointer = (clockPointer + 1) % NUM_FRAMES;
+                    }
                 }
 
-                corpo.appendChild(linha);
-            });
-        }
-
-        function executarInstrucao() {
-            const processo = processos[Math.floor(Math.random() * processos.length)];
-            const pagina = Math.floor(Math.random() * 6);
-            const index = memoria.findIndex(p => p && p.processo === processo && p.pagina === pagina);
-            document.getElementById("tabelaPaginas").style.display = "block";
-            if (index !== -1) {
-                destacarBloco(index, '#00FF00');
-                console.log("✅ Page Hit");
-            } else {
-                const novoBloco = {
-                    processo,
-                    pagina,
-                    cor: cores[processo],
-                    ocupado: true
+                memoriaFisica[quadroAlvo] = {
+                    processoId: paginaInfo.processoId,
+                    paginaId: paginaInfo.paginaId,
+                    cor: paginaInfo.cor
                 };
-
-                memoria[quadroAtual] = novoBloco;
-                destacarBloco(quadroAtual, '#FF0000');
-                quadroAtual = (quadroAtual + 1) % memoria.length;
-                console.log("❌ Page Fault");
-                atualizarTabela();
-
+                paginaInfo.frame = quadroAlvo;
+                paginaInfo.onDisk = false;
+                paginaInfo.R = 1;
+                paginaInfo.M = (Math.random() < 0.15) ? 1 : 0;
+                paginaInfo.lastAccess = accessCounter;
+                destacarQuadro(quadroAlvo, 'fault');
             }
+            atualizarTodasVisualizacoes();
         }
 
-        function destacarBloco(index, cor) {
-            const blocos = document.querySelectorAll('.bloco-pagina');
-            if (blocos[index]) {
-                blocos[index].style.transition = '0.3s';
-                blocos[index].style.backgroundColor = cor;
+        function destacarQuadro(frameIndex, tipo) {
+            const frameEl = painelMemoriaEl.children[frameIndex];
+            if (!frameEl) return;
 
-                setTimeout(() => {
-                    blocos[index].style.backgroundColor = "#D9D9D9";
-                }, 600);
+            const corOriginal = memoriaFisica[frameIndex] ? memoriaFisica[frameIndex].cor : '#3a3a4a';
+
+            let highlightClass = '';
+            if (tipo === 'hit') {
+                highlightClass = 'highlight-hit';
+            } else if (tipo === 'fault') {
+                highlightClass = 'highlight-fault';
             }
+
+            if (highlightClass) {
+                // Aplicar a cor da animação diretamente antes de adicionar a classe pode ser mais confiável
+                if (tipo === 'hit') frameEl.style.backgroundColor = '#4dff4d';
+                else if (tipo === 'fault') frameEl.style.backgroundColor = '#ff4d4d';
+                frameEl.classList.add(highlightClass);
+            }
+
+
+            setTimeout(() => {
+                if (highlightClass) frameEl.classList.remove(highlightClass);
+                frameEl.style.backgroundColor = corOriginal;
+            }, 700);
         }
+
+
+        // Event Listeners
+        btnIniciar.addEventListener('click', () => {
+            configurarNovaSimulacao(); // Configura ou reconfigura
+            iniciarExecucaoAutomatica(); // Inicia a execução automática
+        });
+
+        btnExecutar.addEventListener('click', () => {
+            if (simulationRunning && !autoExecIntervalId) { // Só executa manualmente se a simulação estiver "pronta" mas não rodando auto
+                executarInstrucaoAleatoria();
+            }
+        });
+
+        btnParar.addEventListener('click', resetarSimulacaoCompleta);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            criarVisualizacaoMemoriaFisica();
+            atualizarTodasVisualizacoes();
+            btnExecutar.disabled = true; // Começa desabilitado
+            btnParar.disabled = true; // Começa desabilitado
+        });
     </script>
-
-
-
 </body>
 
 </html>

@@ -100,7 +100,14 @@
         });
     </script>
 
-
+    <script>
+        document.querySelector(".menu-btn:nth-child(3)").addEventListener("click", function() {
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = "segmentacao.html";
+            }, 600);
+        });
+    </script>
 
 </body>
 
