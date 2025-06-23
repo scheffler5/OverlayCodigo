@@ -8,12 +8,9 @@
     <link rel="stylesheet" href="Styles2.css" />
     <link href="https://fonts.googleapis.com/css2?family=Aldrich&display=swap" rel="stylesheet">
     <style>
-        /* Adaptações e Estilos Adicionais para Paginação */
-        
         body {
             font-family: 'Aldrich', sans-serif;
             background-color: #1e1e2f;
-            /* Um fundo escuro como no exemplo de overlay */
             color: #e0e0e0;
         }
         
@@ -22,7 +19,6 @@
             margin: 20px auto;
             padding: 20px;
             background-color: #2a2a3a;
-            /* Cor de fundo para a área principal */
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
@@ -30,7 +26,6 @@
         .top-group {
             display: flex;
             justify-content: space-around;
-            /* Distribui os quadros de memória */
             margin-bottom: 30px;
             padding: 10px;
             background-color: rgba(0, 0, 0, 0.1);
@@ -38,9 +33,7 @@
         }
         
         .top-box {
-            /* Representa um Quadro de Memória Física */
             width: 18%;
-            /* Para 5 caixas */
             min-height: 100px;
             padding: 10px;
             border: 1px solid #444;
@@ -53,13 +46,10 @@
             font-size: 0.9em;
             transition: background-color 0.3s ease, transform 0.2s ease;
             background-color: #3a3a4a;
-            /* Cor de quadro livre */
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
         }
         
-        .top-box.ocupado {
-            /* A cor será definida pelo processo */
-        }
+        .top-box.ocupado {}
         
         .top-box .frame-id {
             font-size: 0.8em;
@@ -79,7 +69,6 @@
             display: flex;
             justify-content: space-between;
             gap: 20px;
-            /* Espaço entre as colunas centrais */
             margin-bottom: 30px;
         }
         
@@ -88,18 +77,14 @@
             border-radius: 10px;
             padding: 15px;
             flex: 1;
-            /* Faz com que as colunas ocupem espaço igual */
             min-height: 250px;
-            /* Altura mínima para as colunas */
             display: flex;
             flex-direction: column;
         }
         
         .titulo-centro {
             font-size: 1.3em;
-            /* Fonte maior para os títulos das colunas */
             color: #A8DADC;
-            /* Cor de destaque para títulos */
             margin-bottom: 15px;
             text-align: center;
             border-bottom: 1px solid #444;
@@ -107,11 +92,8 @@
         }
         
         .bloco-centro {
-            /* Área de conteúdo das colunas centrais */
             flex-grow: 1;
-            /* Para preencher o espaço vertical */
             overflow-y: auto;
-            /* Scroll se o conteúdo for grande */
             padding: 5px;
         }
         
@@ -125,7 +107,6 @@
             border-radius: 5px;
             font-size: 0.9em;
             border-left: 5px solid #555;
-            /* Destaque lateral */
         }
         
         .bloco-centro .item-tabela span {
@@ -137,7 +118,29 @@
         .bloco-centro .stat-item strong {
             color: #A8DADC;
         }
-        /* Estilos para os botões como no exemplo de overlay */
+        
+        .process-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #555;
+            font-weight: bold;
+        }
+        
+        .process-header .process-name {
+            font-size: 1.1em;
+            color: #e0e0e0;
+        }
+        
+        .process-header .process-size {
+            font-size: 0.8em;
+            color: #aaa;
+            background-color: #2a2a3a;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
         
         .botoes {
             display: flex;
@@ -156,12 +159,10 @@
             transition: background-color 0.3s, transform 0.2s;
             color: white;
             min-width: 150px;
-            /* Largura mínima para botões */
         }
         
         .botao.iniciar {
             background-color: #4CAF50;
-            /* Verde */
         }
         
         .botao.iniciar:hover {
@@ -170,9 +171,7 @@
         }
         
         .botao.executar {
-            /* Novo botão */
             background-color: #2196F3;
-            /* Azul */
         }
         
         .botao.executar:hover {
@@ -182,7 +181,6 @@
         
         .botao.parar {
             background-color: #f44336;
-            /* Vermelho */
         }
         
         .botao.parar:hover {
@@ -194,7 +192,6 @@
             background-color: #777;
             cursor: not-allowed;
         }
-        /* Animação de destaque para quadros de memória */
         
         .highlight-fault {
             animation: faultPulse 0.7s ease-out;
@@ -209,9 +206,7 @@
                 background-color: #ff4d4d;
                 transform: scale(1.05);
             }
-            /* Vermelho para fault */
             100% {
-                /* Retorna à cor original via JS */
                 transform: scale(1);
             }
         }
@@ -221,9 +216,7 @@
                 background-color: #4dff4d;
                 transform: scale(1.05);
             }
-            /* Verde para hit */
             100% {
-                /* Retorna à cor original via JS */
                 transform: scale(1);
             }
         }
@@ -264,7 +257,7 @@
         const NUM_FRAMES = 5;
         const NUM_PROCESSOS = 4;
         const PAGINAS_POR_PROCESSO = 4;
-        const AUTO_EXEC_INTERVAL_MS = 1500; // Intervalo para execução automática (1.5 segundos)
+        const AUTO_EXEC_INTERVAL_MS = 1500;
 
         let memoriaFisica = [];
         let tabelaPaginasGlobal = {};
@@ -274,13 +267,19 @@
         let clockPointer = 0;
         let simulationRunning = false;
         let accessCounter = 0;
-        let autoExecIntervalId = null; // ID para o setInterval
+        let autoExecIntervalId = null;
 
         const processosCores = {
             "P0": "#FFADAD",
             "P1": "#FFD6A5",
             "P2": "#FDFFB6",
             "P3": "#CAFFBF",
+        };
+        const processosTamanhos = {
+            "P0": "0 - 1239",
+            "P1": "1240 - 2879",
+            "P2": "2880 - 4319",
+            "P3": "4320 - 5559",
         };
 
         const painelMemoriaEl = document.getElementById('painelMemoriaFisica');
@@ -292,9 +291,8 @@
         const btnExecutar = document.getElementById('btnExecutarInstrucao');
         const btnParar = document.getElementById('btnParar');
 
-        // Renomeada para clareza
         function configurarNovaSimulacao() {
-            pararExecucaoAutomatica(); // Garante que qualquer execução anterior pare
+            pararExecucaoAutomatica();
 
             memoriaFisica = new Array(NUM_FRAMES).fill(null);
             tabelaPaginasGlobal = {};
@@ -319,41 +317,56 @@
                     };
                 }
             }
+            const paginasIniciaisParaCarregar = ['P0_0', 'P1_0', 'P2_0', 'P3_0', 'P1_1'];
+            for (let i = 0; i < NUM_FRAMES; i++) {
+                if (paginasIniciaisParaCarregar[i]) {
+                    const paginaVirtualId = paginasIniciaisParaCarregar[i];
+                    const paginaInfo = tabelaPaginasGlobal[paginaVirtualId];
+                    if (paginaInfo) {
+                        const frameAlvo = i;
+                        memoriaFisica[frameAlvo] = {
+                            processoId: paginaInfo.processoId,
+                            paginaId: paginaInfo.paginaId,
+                            cor: paginaInfo.cor
+                        };
+                        paginaInfo.frame = frameAlvo;
+                        paginaInfo.onDisk = false;
+                        paginaInfo.R = 1;
+                        paginaInfo.M = 0;
+                        paginaInfo.lastAccess = 0;
+                    }
+                }
+            }
+
+
 
             criarVisualizacaoMemoriaFisica();
             atualizarTodasVisualizacoes();
-            simulationRunning = true; // A lógica está pronta, mas a auto-execução ainda não começou
-
-            // Estados dos botões são definidos por quem chama esta função
+            simulationRunning = true;
         }
 
-        // Renomeada para clareza
         function resetarSimulacaoCompleta() {
             pararExecucaoAutomatica();
             simulationRunning = false;
 
-            // Limpar estruturas de dados (opcional, pois configurarNovaSimulacao fará isso)
-            // memoriaFisica = new Array(NUM_FRAMES).fill(null);
-            // tabelaPaginasGlobal = {};
-            // pageFaults = 0; pageHits = 0; clockPointer = 0; accessCounter = 0;
-
-            criarVisualizacaoMemoriaFisica(); // Limpa os quadros visuais
-            atualizarTodasVisualizacoes(); // Limpa as listas e estatísticas
+            criarVisualizacaoMemoriaFisica();
+            atualizarTodasVisualizacoes();
 
             btnIniciar.textContent = "Iniciar Simulação";
+            btnIniciar.disabled = false;
             btnExecutar.disabled = true;
             btnParar.disabled = true;
             console.log("Simulação resetada.");
         }
 
         function iniciarExecucaoAutomatica() {
-            if (!simulationRunning) return; // Não iniciar se a simulação não estiver configurada
-            pararExecucaoAutomatica(); // Limpa qualquer intervalo anterior
+            if (!simulationRunning) return;
+            pararExecucaoAutomatica();
 
             autoExecIntervalId = setInterval(executarInstrucaoAleatoria, AUTO_EXEC_INTERVAL_MS);
 
-            btnIniciar.textContent = "Reiniciar Simulação"; // Agora funciona como reiniciar
-            btnExecutar.disabled = true; // Desabilitado durante auto-execução
+            btnIniciar.textContent = "Reiniciar Simulação";
+            btnExecutar.disabled = true;
             btnParar.disabled = false;
         }
 
@@ -362,8 +375,6 @@
                 clearInterval(autoExecIntervalId);
                 autoExecIntervalId = null;
             }
-            // Não reabilita btnExecutar aqui, pois Parar agora é um reset completo
-            // Se fosse um "Pause", reabilitaria.
         }
 
         function criarVisualizacaoMemoriaFisica() {
@@ -393,7 +404,7 @@
 
         function atualizarVisualizacaoQuadro(frameIndex, paginaInfo) {
             const frameEl = painelMemoriaEl.children[frameIndex];
-            if (!frameEl) return; // Segurança
+            if (!frameEl) return;
             const pageInfoEl = frameEl.querySelector('.page-info');
             const processIdEl = frameEl.querySelector('.process-id');
 
@@ -412,20 +423,38 @@
 
         function atualizarVisualizacaoPaginasEmDisco() {
             paginasEmDiscoEl.innerHTML = '';
-            Object.values(tabelaPaginasGlobal).forEach(pagina => {
-                if (pagina.onDisk && pagina.frame === null) {
-                    const item = document.createElement('div');
-                    item.classList.add('item-pagina');
-                    item.textContent = `Proc ${pagina.processoId} - Pág ${pagina.paginaId}`;
-                    item.style.borderLeftColor = pagina.cor;
-                    paginasEmDiscoEl.appendChild(item);
-                }
-            });
+            for (let i = 0; i < NUM_PROCESSOS; i++) {
+                const processoId = `P${i}`;
+                const corDoProcesso = processosCores[processoId];
+                const tamanhoDoProcesso = processosTamanhos[processoId];
+                const headerEl = document.createElement('div');
+                headerEl.classList.add('process-header');
+                headerEl.style.borderBottomColor = corDoProcesso;
+                headerEl.innerHTML = `
+                    <span class="process-name">Processo ${processoId}</span>
+                    <span class="process-size">Tamanho: ${tamanhoDoProcesso}</span>
+                `;
+                paginasEmDiscoEl.appendChild(headerEl);
+                Object.values(tabelaPaginasGlobal).forEach(pagina => {
+                    if (pagina.processoId === processoId && pagina.onDisk && pagina.frame === null) {
+                        const item = document.createElement('div');
+                        item.classList.add('item-pagina');
+                        item.textContent = `Proc ${pagina.processoId} - Pág ${pagina.paginaId}`;
+                        item.style.borderLeftColor = pagina.cor;
+                        paginasEmDiscoEl.appendChild(item);
+                    }
+                });
+            }
         }
 
         function atualizarVisualizacaoTabelaPaginasMemoria() {
             tabelaPaginasMemoriaEl.innerHTML = '';
-            Object.values(tabelaPaginasGlobal).forEach(pagina => {
+            Object.values(tabelaPaginasGlobal).sort((a, b) => {
+                if (a.frame === null && b.frame !== null) return 1;
+                if (a.frame !== null && b.frame === null) return -1;
+                if (a.frame === null && b.frame === null) return 0;
+                return a.frame - b.frame;
+            }).forEach(pagina => {
                 if (pagina.frame !== null) {
                     const item = document.createElement('div');
                     item.classList.add('item-tabela');
@@ -438,7 +467,7 @@
 
         function atualizarVisualizacaoEstatisticas() {
             const totalAcessos = pageHits + pageFaults;
-            const hitRate = totalAcessos > 0 ? ((pageHits / totalAcessos) * 100).toFixed(1) : 0;
+            const hitRate = totalAcessos > 0 ? ((pageHits / totalAcessos) * 100).toFixed(1) : "0.0";
             estatisticasAcessoEl.innerHTML = `
                 <div class="stat-item">Page Hits: <strong>${pageHits}</strong></div>
                 <div class="stat-item">Page Faults: <strong>${pageFaults}</strong></div>
@@ -457,7 +486,7 @@
 
         function executarInstrucaoAleatoria() {
             if (!simulationRunning) {
-                pararExecucaoAutomatica(); // Segurança: se algo desabilitou a simulação
+                pararExecucaoAutomatica();
                 return;
             }
             accessCounter++;
@@ -491,11 +520,11 @@
                 } else {
                     console.log("Memória cheia. Aplicando Clock Algorithm.");
                     let encontradoParaSubstituir = false;
-                    let tentativasClock = 0; // Para evitar loop infinito em casos extremos
-                    while (!encontradoParaSubstituir && tentativasClock < NUM_FRAMES * 2) { // Limite de tentativas
+                    let tentativasClock = 0;
+                    while (!encontradoParaSubstituir && tentativasClock < NUM_FRAMES * 2) {
                         const paginaNoQuadroClock = memoriaFisica[clockPointer];
-                        // É crucial que paginaNoQuadroClock não seja null aqui, o que não deveria acontecer se não há quadros livres.
-                        if (!paginaNoQuadroClock) { // Salvaguarda
+
+                        if (!paginaNoQuadroClock) {
                             console.error(`Erro: Quadro ${clockPointer} está null inesperadamente durante o Clock.`);
                             clockPointer = (clockPointer + 1) % NUM_FRAMES;
                             tentativasClock++;
@@ -513,8 +542,6 @@
                             paginaGlobalNoQuadroClock.frame = null;
                             paginaGlobalNoQuadroClock.onDisk = true;
                             paginaGlobalNoQuadroClock.R = 0;
-                            // M bit idealmente é resetado pelo SO após escrita em disco. Aqui, vamos mantê-lo para info.
-                            // paginaGlobalNoQuadroClock.M = 0; 
 
                             encontradoParaSubstituir = true;
                         } else {
@@ -525,7 +552,7 @@
                     }
                     if (!encontradoParaSubstituir) {
                         console.warn("Clock não encontrou página para substituir após várias tentativas. Forçando substituição no ponteiro atual.");
-                        quadroAlvo = clockPointer; // Fallback: substitui onde o ponteiro parou
+                        quadroAlvo = clockPointer;
                         const paginaNoQuadroClock = memoriaFisica[quadroAlvo];
                         if (paginaNoQuadroClock) {
                             const paginaGlobalNoQuadroClock = tabelaPaginasGlobal[`${paginaNoQuadroClock.processoId}_${paginaNoQuadroClock.paginaId}`];
@@ -566,39 +593,37 @@
             }
 
             if (highlightClass) {
-                // Aplicar a cor da animação diretamente antes de adicionar a classe pode ser mais confiável
                 if (tipo === 'hit') frameEl.style.backgroundColor = '#4dff4d';
                 else if (tipo === 'fault') frameEl.style.backgroundColor = '#ff4d4d';
                 frameEl.classList.add(highlightClass);
             }
-
 
             setTimeout(() => {
                 if (highlightClass) frameEl.classList.remove(highlightClass);
                 frameEl.style.backgroundColor = corOriginal;
             }, 700);
         }
-
-
-        // Event Listeners
         btnIniciar.addEventListener('click', () => {
-            configurarNovaSimulacao(); // Configura ou reconfigura
-            iniciarExecucaoAutomatica(); // Inicia a execução automática
+            configurarNovaSimulacao();
+            iniciarExecucaoAutomatica();
+            btnIniciar.disabled = true;
         });
 
         btnExecutar.addEventListener('click', () => {
-            if (simulationRunning && !autoExecIntervalId) { // Só executa manualmente se a simulação estiver "pronta" mas não rodando auto
+            if (simulationRunning && !autoExecIntervalId) {
                 executarInstrucaoAleatoria();
             }
         });
 
-        btnParar.addEventListener('click', resetarSimulacaoCompleta);
+        btnParar.addEventListener('click', () => {
+            resetarSimulacaoCompleta();
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             criarVisualizacaoMemoriaFisica();
             atualizarTodasVisualizacoes();
-            btnExecutar.disabled = true; // Começa desabilitado
-            btnParar.disabled = true; // Começa desabilitado
+            btnExecutar.disabled = true;
+            btnParar.disabled = true;
         });
     </script>
 </body>
